@@ -1,4 +1,4 @@
-import discord
+import discord 
 
 client = discord.Client()
 
@@ -18,10 +18,5 @@ async def on_message(message):
     if message.content.startswith('!nishida'):
         await message.channel.send('gatinho rawr miau >///<')
 
-    if message.content.startswith('!avatar'):
-        avatar = discord.User(avatar_url)
-        await message.channel.send(avatar)
-
-    
 
 client.run('ODQwMDU1MDk1OTcwMjM0Mzk5.YJSoRg.Pr6dv_758lzs9s-INR6oeOAFGV0')
