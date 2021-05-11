@@ -10,3 +10,4 @@ class StreamerDAO():
         cursor.execute(sql, (streamer.id,streamer.name,streamer.level,streamer.stamina,streamer.subs,streamer.money))
         self.db.commit()
         return cursor.lastrowid
+    

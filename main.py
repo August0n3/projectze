@@ -1,72 +1,29 @@
 import discord 
 import asyncio
 import sqlite3
-from models.streamer import Streamer
-from models.streamerDAO import StreamerDAO
+from discord.ext import commands
+import random
+from discord.ext.commands import AutoShardedBot, when_mentioned_or
+#comenta ai dps pra eu entender quando eu for ler, se possivel
 
-database= 'database/projectze.db'
-conect =sqlite3.connect(database)
+#definições gerais
+client = commands.Bot(command_prefix = "<", case_insensitive = True)
 
-client = discord.Client()
-
-#criando o embed da mensagem <help
-help_embed = discord.Embed(
-            title= 'Bem vindo ao José bot! O bot que simula a vida de um streamer!',
-            color=3787471,
-            description="Para registrar-se digite - <register \n"
-                        "Para ir para a loja digite - <store\n"
-                        "Para ver seus status digite - <status\n"
-                        "Para começar uma stream digite- <stream\n"
-        )
-#definindo a imagem do embed help
-help_embed.set_image(url='https://imgur.com/ELbZ9aM.png')
-
-msg_id = None
-msg_user = None
+modulos = ["cogs.comando"]
 
 #mensagem inical do bot
 @client.event
 async def on_ready():
     print('Bot online - Olá, Mundo!')
+    # isso aq inicia a stream, ainda n sei mt bem como funciona mas tinha no tutorial
+    await client.change_presence(activity=discord.Streaming(name="<help", url="https://www.twitch.com/123"))
     print(client.user)
 
-@client.event
-async def on_message(message):
-    #criando a mensagem de <help
-    if message.content.lower().startswith('<help'):
-        global help_embed
-        help_msg = await message.channel.send(embed=help_embed)
+#iniciador de módulos
+#o nome do arquivo dentro de cogs tava diferente. Tava "comandos" mas é pra ser "comando".
+if __name__ == "__main__":
+    for modulo in modulos:
+        client.load_extension(modulo)
 
-    #criando register
-    if message.content.lower().startswith("<register"):
-        streamerDAO=StreamerDAO(conect)
-        idstreamer = int(message.author.id)
-        namestreamer = str(message.author)
-        streamer=Streamer(
-            idstreamer,
-            namestreamer,
-            0,
-            50,
-            0,
-            1000
-            ) 
-        streamerDAO.cadastro(streamer)
-        if streamer.id != None:
-            await message.channel.send("Cadastrado com sucesso!")
-        else:
-            await message.channel.send('Falha no cadastro.')
-#não esta funcionando 
-@client.event
-async def on_member_join(member):
-  canal = client.get_channel("840059515462090824")
-  msg = "Bem Vindo {}".format(member.mention)
-  await client.send(canal, msg) 
-
-@client.event
-async def on_member_remove(member):
-   canal = client.get_channel("840059515462090824")
-   msg = "Adeus garotinho juvenil {}".format(member.mention)
-   await client.channel.send(canal, msg) #substitua canal por member para enviar a msg no DM do membro
-
-#iniciando o bot com o token
-client.run('ODQwMDU1MDk1OTcwMjM0Mzk5.YJSoRg.Pr6dv_758lzs9s-INR6oeOAFGV0')
+    client.run("ODQwMDU1MDk1OTcwMjM0Mzk5.YJSoRg.Pr6dv_758lzs9s-INR6oeOAFGV0")
+    # o erro ta sendo na construção do embed agr, mas acho que sei como resolver
