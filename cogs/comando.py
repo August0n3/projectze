@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from models.streamer import Streamer
-from models.streamerDAO import StreamerDAO
+from models.streamerDAO import StreamerDAO 
 import sqlite3
 
 msg_id = None
@@ -27,7 +27,8 @@ class Comando(commands.Cog):
     @commands.cooldown(1,5, commands.BucketType.user)
     @commands.guild_only()
     @commands.command()
-    #<register
+    
+    #<iniciar
     async def iniciar(self, ctx):
         help_embed = discord.Embed(
         title= 'Bem vindo ao José bot! O bot que simula a vida de um streamer!',
@@ -48,6 +49,7 @@ class Comando(commands.Cog):
     @commands.cooldown(1,5, commands.BucketType.user)
     @commands.guild_only()
     @commands.command()   
+   #<register
     async def register(self, ctx):
         #conectando a dao ao banco de dados
         streamerDAO=StreamerDAO(conect)
@@ -105,22 +107,54 @@ class Comando(commands.Cog):
     @commands.command()  
     #<buy
     async def buy(self, ctx):
+        user = StreamerDAO(conect)
+        info = StreamerDAO(conect)
+        info = info.pesquisar(iduser)
         mensagem = str(ctx.message.content)
         mensagem = mensagem.replace("<buy ","")
         if mensagem.upper() == "ENERGETICO":
+            user.atualiza_stamina(int(ctx.author.id), int(info[0][3]) + int(energetico[0]))
+            user.atualiza_dinheiro(int(ctx.author.id), int(info[0][5]) - int(energetico[1]))
             await ctx.send(f'{ctx.author.mention} acabou de pagar {str(energetico[1])}R$ e comprou um {mensagem.replace("item:","").capitalize()}, ganhando mais {str(energetico[0])} de stamina para streamar!')
         elif mensagem.upper() == "COCA-COLA":
+            user.atualiza_stamina(int(ctx.author.id), int(info[0][3]) + int(coca[0]))
+            user.atualiza_dinheiro(int(ctx.author.id), int(info[0][5]) - int(coca[1]))
             await ctx.send(f'{ctx.author.mention} acabou de pagar {str(coca[1])}R$ e comprou uma {mensagem.replace("item:","").capitalize()}, ganhando mais {str(coca[0])} de stamina para streamar!')
         elif mensagem.upper() == "BIGMAC":
+            user.atualiza_stamina(int(ctx.author.id), int(info[0][3]) + int(mac[0]))
+            user.atualiza_dinheiro(int(ctx.author.id), int(info[0][5]) - int(mac[1]))
             await ctx.send(f'{ctx.author.mention} acabou de pagar {str(mac[1])}R$ e comprou um {mensagem.replace("item:","").capitalize()}, ganhando mais {str(mac[0])} de stamina para streamar!')
         elif mensagem.upper() == "CADEIRA GAMER DO BAR":
+            user.atualiza_stamina(int(ctx.author.id), int(info[0][3]) + int(c_bar[0]))
+            user.atualiza_dinheiro(int(ctx.author.id), int(info[0][5]) - int(c_bar[1]))
             await ctx.send(f'{ctx.author.mention} acabou de pagar {str(c_bar[1])}R$ e comprou uma {mensagem.replace("item:","").capitalize()}, dessa forma, gastando {str(c_bar[0])} pontos(s) a menos de stamina durante 1 hora de live!')
         elif mensagem.upper() == "CADEIRA GAMER REDDRAGON":
+            user.atualiza_stamina(int(ctx.author.id), int(info[0][3]) + int(c_red[0]))
+            user.atualiza_dinheiro(int(ctx.author.id), int(info[0][5]) - int(c_red[1]))
             await ctx.send(f'{ctx.author.mention} acabou de pagar {str(c_red[1])}R$ e comprou uma {mensagem.replace("item:","").capitalize()}, dessa forma, gastando {str(c_red[0])} pontos(s) a menos de stamina durante 1 hora de live!')
         elif mensagem.upper() == "CADEIRA GAMER DO KAMI":
+            user.atualiza_stamina(int(ctx.author.id), int(info[0][3]) + int(c_kami[0]))
+            user.atualiza_dinheiro(int(ctx.author.id), int(info[0][5]) - int(c_kami[1]))
             await ctx.send(f'{ctx.author.mention} acabou de pagar {str(c_kami[1])}R$ e comprou uma {mensagem.replace("item:","").capitalize()}, dessa forma, gastando {str(c_kami[0])} pontos(s) a menos de stamina durante 1 hora de live!')
         else:
             await ctx.send(f'{ctx.author.mention}, o item que você solicitou não está em nosso catalogo. Por favor, tente novamente!')
+
+    #<info
+    @commands.cooldown(1,5, commands.BucketType.user)
+    @commands.guild_only()
+    @commands.command() 
+    async def info(self, ctx):
+        iduser = int(ctx.author.id)
+        info = StreamerDAO(conect)
+        info = info.pesquisar(iduser)
+        embed=discord.Embed(title="Informações do usuario", color=0x00fbff)
+        embed.add_field(name="Nome", value=info[0][1], inline=True)
+        embed.add_field(name="Level", value=info[0][2], inline=True)
+        embed.add_field(name="Stamina", value=info[0][3], inline=True) 
+        embed.add_field(name="Subs", value=info[0][4], inline=True)
+        embed.add_field(name="Dinheiro", value=info[0][5], inline=True)
+        await ctx.send(embed=embed)
+
 
 def setup(client):
     client.add_cog(Comando(client))
