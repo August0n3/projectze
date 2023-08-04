@@ -20,4 +20,4 @@ if __name__ == "__main__":
     for modulo in modulos:
         client.load_extension(modulo)
 
-    client.run("ODQwMDU1MDk1OTcwMjM0Mzk5.YJSoRg.Pr6dv_758lzs9s-INR6oeOAFGV0")
+    client.run("****")#colocar a chave de inicio do discord.
