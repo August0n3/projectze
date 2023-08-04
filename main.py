@@ -11,7 +11,7 @@ modulos = ["cogs.comando"]
 @client.event
 async def on_ready():
     print('Bot online - Olá, Mundo!')
-    # isso aq inicia a stream, ainda n sei mt bem como funciona mas tinha no tutorial
+    # isso aq inicia a stream
     await client.change_presence(activity=discord.Streaming(name="<help", url="https://www.twitch.com/123"))
     print(client.user)
 
